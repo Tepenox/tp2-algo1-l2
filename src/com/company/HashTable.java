@@ -8,12 +8,8 @@ public class HashTable {
 
 
     public void add (String string){
-      char c[] = string.toCharArray();
-      List<Character> key =  new ArrayList<>();
-      for (Character character: c ){
-          key.add(character);
-      }
-      Collections.sort(key);
+      List<Character> key =  stringToSortedArray(string);
+
       if (hashMap.containsKey(key)){
           hashMap.get(key).add(string);
       }else{
@@ -31,24 +27,16 @@ public class HashTable {
 
 
     public List<String> search(String word){
-
-        List<Character> key =  stringToSortedArray(word);
-        //o,o,t,t
-        List<Character> keyToSearch = new ArrayList<>();
-        for (int i = 0 ; i < key.size()  ; i++ ){
-            keyToSearch.add(key.get(i)); //o
-            if (contains(keyToSearch)){
-                String subtractOfWord = "";
-                for (int j = 0 ; j < word.length() ; j++ ){
-                    if (!keyToSearch.contains(word.charAt(j))){
-                        subtractOfWord += word.charAt(j);
-                    }
-                }
-                List<Character> subtractOfWordList = stringToSortedArray(subtractOfWord);
-                if (contains(subtractOfWordList)){
-                    for (String s1 : hashMap.get(keyToSearch)){// always 1 result //TODO: cédric geule !
-                        for (String s2 : hashMap.get(subtractOfWordList)) {
-                            if ((s1 += s2).equals(word) || (s2 += s1).equals(word))
+        for (int i = 1 ; i < word.length() ; i++ ){
+            List<Character> list1 = stringToSortedArray(word.substring(0,i));
+            if (contains(list1)){
+                List<Character> list2 = stringToSortedArray(word.substring(i));
+                if (contains(list2)){
+                    for (String s1 : hashMap.get(list1)){
+                        for (String s2 : hashMap.get(list2)) {
+                            String tmpS1 = new String(s1);
+                            String tmpS2 = new String(s2);
+                            if ((tmpS1 += tmpS2).equals(word) || (tmpS2 += tmpS1).equals(word))
                                 return List.of(s1,s2);
                         }
                     }
